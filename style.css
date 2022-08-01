@@ -211,7 +211,7 @@ main section img {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  animation: morph 8s ease-in-out infinite 1s;
+  /**animation: morph 8s ease-in-out infinite 1s;**/
   background-blend-mode: multiply;
   border: 10px solid #f9da85;
   max-width: 90%;
