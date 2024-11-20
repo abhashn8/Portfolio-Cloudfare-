@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Search - Abhash Niroula</title>
+    <style>
+        /* Inline CSS for simplicity, can be moved to a separate CSS file */
+        .modal {
+            display: flex;
+            position: fixed;
+            z-index: 2;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #userInput {
+            width: calc(100% - 110px);
+            padding: 10px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .modal-content button {
+            padding: 10px;
+            background-color: #f9da85;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal-content button:hover {
+            background-color: #ecca6b;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <input type="text" id="userInput" placeholder="Ask anything about Abhash Niroula..." />
+            <button onclick="handleQuery()">Search</button>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle user input and redirect to appropriate sections
+        function handleQuery() {
+            const userInput = document.getElementById("userInput").value.toLowerCase();
+
+            if (userInput.includes("resume") || userInput.includes("cv")) {
+                window.location.href = "index.html#resume"; // Assuming resume is a section in your existing file
+            } else if (userInput.includes("portfolio") || userInput.includes("projects")) {
+                window.location.href = "index.html#portfolio"; // Redirect to portfolio section
+            } else if (userInput.includes("contact")) {
+                window.location.href = "index.html#contact";
+            } else if (userInput.includes("about") || userInput.includes("who is abhash")) {
+                window.location.href = "index.html#about";
+            } else {
+                alert("You can only browse information about Abhash Niroula. This is his world!");
+            }
+        }
+    </script>
+</body>
+
+</html>
