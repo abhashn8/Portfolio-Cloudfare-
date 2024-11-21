@@ -24,44 +24,44 @@ article, nav, canvas, details, embed,
 figure, figcaption, footer, header, hgroup,
 menu, nav, output, ruby, section, summary,
 time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 img {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
 
 /* HTML5 display-role reset for older browsers */
 article, nav, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
-	display: block;
+  display: block;
 }
 body {
-	line-height: 1;
+  line-height: 1;
 }
 ol, ul {
-	list-style: none;
+  list-style: none;
 }
 blockquote, q {
-	quotes: none;
+  quotes: none;
 }
 blockquote:before, blockquote:after,
 q:before, q:after {
-	content: '';
-	content: none;
+  content: '';
+  content: none;
 }
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 /** APP GLOBALS **/
@@ -219,7 +219,6 @@ main section img:not(.png-imgs) {
   border-radius: 60% 40% 30% 70%/60% 30% 70% 40%;
 }
 
-
 main section img:not(.png-imgs):hover {
   border: 10px solid #dadadabf;
 }
@@ -233,7 +232,6 @@ main section.home {
   align-items: center;
 }
 
-
 main section.home .avatar {
   width: 100%;
   margin-right: 64px;
@@ -246,7 +244,6 @@ main section.home .content ul {
 main section.home .content ul li {
   margin-right: 24px;
 }
-
 
 main section.home .content ul li a img{
   height: 21px;
@@ -365,6 +362,29 @@ main section.contact button:hover {
   background-color: #ffca3a;
 }
 
+/** RESUME BUTTON **/
+.resume-button {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 10px 20px;
+  background-color: #f9da85;
+  color: #000000;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 5px;
+  border: 2px solid #ecca6b;
+  cursor: pointer;
+  transition: background-color 300ms ease, transform 150ms ease;
+}
+
+.resume-button:hover {
+  background-color: #ecca6b;
+  transform: scale(1.05);
+}
+
 /** ANIMATIONS **/
 @keyframes morph {
   0% {
@@ -431,8 +451,6 @@ main section.contact button:hover {
   }
 }
 
-
 .content>p{
-font-size: 12px;
+  font-size: 12px;
 }
-
