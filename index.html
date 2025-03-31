@@ -1,128 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
-    <!-- Site link = https://abhashn8.github.io/Portfolio-Cloudfare-/ -->
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Search - Abhash Niroula</title>
     <style>
-        /* Inline CSS for simplicity, can be moved to a separate CSS file */
-        .modal {
-            display: flex;
-            position: fixed;
-            z-index: 2;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.8);
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 15px;
-            max-width: 600px;
-            width: 90%;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            text-align: center;
-            border: 3px solid #f9da85;
-        }
-
-        #userInput {
-            width: calc(100% - 130px);
-            padding: 12px;
-            margin-right: 10px;
-            font-size: 16px;
-            border: 2px solid #ecca6b;
-            border-radius: 5px;
-        }
-
-        .modal-content button {
-            padding: 12px 20px;
-            background-color: #f9da85;
-            border: 2px solid #ecca6b;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-family: 'Poppins', sans-serif;
-            transition: background-color 300ms ease, transform 150ms ease;
-        }
-
-        .modal-content button:hover {
-            background-color: #ecca6b;
-            transform: scale(1.05);
-        }
-
-        .intro-text {
-            margin-bottom: 25px;
-            font-size: 14px;
-            color: #383838;
-            line-height: 1.6;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .modal-content input::placeholder {
-            color: #999999;
-            font-style: italic;
-        }
+      .modal {
+        display: flex;
+        position: fixed;
+        z-index: 2;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.8);
+        align-items: center;
+        justify-content: center;
+      }
+      .modal-content {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 10px;
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+      }
+      #userInput {
+        width: calc(100% - 110px);
+        padding: 10px;
+        margin-right: 10px;
+        font-size: 16px;
+      }
+      .modal-content button {
+        padding: 10px;
+        background-color: #f9da85;
+        border: none;
+        cursor: pointer;
+        font-weight: bold;
+      }
+      .response {
+        margin-top: 20px;
+        text-align: left;
+      }
+      .chat-message {
+        margin-bottom: 10px;
+      }
+      .user-message {
+        text-align: right;
+        color: blue;
+      }
+      .ai-message {
+        text-align: left;
+        color: green;
+      }
     </style>
-</head>
-
-<body>
+  </head>
+  <body>
     <div id="searchModal" class="modal">
-        <div class="modal-content">
-            <p class="intro-text">Greetings!! This is Abhash and I hope that you are having a great day. Here, you can ask me questions like you are talking to the real me. For example: If you want to see my resume then you can simply type, "Abhash, let me see your resume."</p>
-            <input type="text" id="userInput" placeholder="Ask anything about Abhash Niroula..." />
-            <button onclick="handleQuery()">Search</button>
-        </div>
+      <div class="modal-content">
+        <p>
+          Greetings! I am Abhash, and you can ask me anything about me and my profile
+          portfolio. For example: "Show me your resume."
+        </p>
+        <input
+          type="text"
+          id="userInput"
+          placeholder="Ask anything about Abhash Niroula..."
+        />
+        <button onclick="handleQuery()">Search</button>
+        <div id="chatHistory" class="response"></div>
+      </div>
     </div>
 
     <script>
-        // Function to handle user input and redirect to appropriate sections
-        function handleQuery() {
-            const userInput = document.getElementById("userInput").value.toLowerCase();
+      function handleQuery() {
+        const userInput = document.getElementById("userInput").value.trim();
+        if (!userInput) return;
 
-            if (userInput.includes("resume") || userInput.includes("cv")) {
-                window.location.href = "https://abhashn8.github.io/Portfolio-Cloudfare-/media/Resume.pdf"; 
-            } else if (userInput.includes("portfolio") || userInput.includes("projects")) {
-                window.location.href = "home.html#portfolio"; // Redirect to portfolio section
-            } else if (userInput.includes("contact")) {
-                window.location.href = "home.html#contact";
-            } else if (userInput.includes("about") || userInput.includes("who is abhash")) {
-                window.location.href = "home.html#about";
-            } else {
-                alert("You can only browse information about Abhash Niroula. This is his world!");
+        const chatHistoryDiv = document.getElementById("chatHistory");
+
+        // Append user message to the chat history.
+        const userMessage = document.createElement("p");
+        userMessage.classList.add("chat-message", "user-message");
+        userMessage.innerHTML = `<strong>You:</strong> ${userInput}`;
+        chatHistoryDiv.appendChild(userMessage);
+
+        // Clear the input field.
+        document.getElementById("userInput").value = "";
+
+        // Append a loading message.
+        const loadingMessage = document.createElement("p");
+        loadingMessage.innerHTML = `<em>Loading...</em>`;
+        chatHistoryDiv.appendChild(loadingMessage);
+
+        // Send the user's question to the backend API.
+        fetch("http://localhost:3000/api/askOpenAI", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ question: userInput }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Remove the loading message.
+            chatHistoryDiv.removeChild(loadingMessage);
+
+            // Navigation logic: if the answer includes a portfolio link, redirect to home.html.
+            if (data.answer.includes("portfolio link")) {
+              window.location.href = "home.html";
+              return;
             }
-        }
-    </script>
-    
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "AIzaSyBV98P9AUWjIdm8-T8ksoLlKU1DeAL6BT0",
-          authDomain: "portfolio-numero-uno.firebaseapp.com",
-          projectId: "portfolio-numero-uno",
-          storageBucket: "portfolio-numero-uno.firebasestorage.app",
-          messagingSenderId: "970751459237",
-          appId: "1:970751459237:web:a390114dfc2d8cc5f1324c",
-          measurementId: "G-8LTYQV2XDL"
-        };
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-      </script>
-</body>
 
+            // Alternatively, if the answer includes a resume download keyword,
+            // display a download link.
+            if (data.answer.includes("download resume")) {
+              const downloadLink = document.createElement("p");
+              downloadLink.classList.add("chat-message", "ai-message");
+              downloadLink.innerHTML = `<strong>Abhash:</strong> <a href="https://your-cloudflare-resume-link.pdf" target="_blank">Download Resume</a>`;
+              chatHistoryDiv.appendChild(downloadLink);
+            } else {
+              // Otherwise, just display the answer in the chat.
+              const aiMessage = document.createElement("p");
+              aiMessage.classList.add("chat-message", "ai-message");
+              aiMessage.innerHTML = `<strong>Abhash:</strong> ${data.answer}`;
+              chatHistoryDiv.appendChild(aiMessage);
+            }
+          })
+          .catch((error) => {
+            // Remove the loading message and show an error message.
+            chatHistoryDiv.removeChild(loadingMessage);
+            const errorMessage = document.createElement("p");
+            errorMessage.classList.add("chat-message", "ai-message");
+            errorMessage.innerHTML = `<strong>Abhash:</strong> Sorry, something went wrong.`;
+            chatHistoryDiv.appendChild(errorMessage);
+          });
+      }
+
+      // Allow "Enter" key to trigger the search.
+      document
+        .getElementById("userInput")
+        .addEventListener("keydown", function (event) {
+          if (event.key === "Enter") {
+            event.preventDefault();
+            handleQuery();
+          }
+        });
+    </script>
+  </body>
 </html>
