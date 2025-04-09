@@ -41,6 +41,8 @@
       .response {
         margin-top: 20px;
         text-align: left;
+        max-height: 300px; 
+        overflow-y: auto;  
       }
       .chat-message {
         margin-bottom: 10px;
@@ -59,7 +61,7 @@
     <div id="searchModal" class="modal">
       <div class="modal-content">
         <p>
-          Greetings! I am Abhash, and you can ask me anything about me and my profile
+          Greetings! I am Abhash's best friend, and you can ask me anything about me and my profile
           portfolio. For example: "Show me your resume."
         </p>
         <input
@@ -94,7 +96,7 @@
         chatHistoryDiv.appendChild(loadingMessage);
 
         // Send the user's question to the backend API.
-        fetch("http://localhost:3000/api/askOpenAI", {
+        fetch("https://portfoliobackend-production-5759.up.railway.app/api/askOpenAI", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
