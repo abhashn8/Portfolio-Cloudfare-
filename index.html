@@ -3,97 +3,176 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" type="text/css" href="styleindex.css" />
     <title>Search - Abhash Niroula</title>
-    <style>
-      .modal {
-        display: flex;
-        position: fixed;
-        z-index: 2;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.8);
-        align-items: center;
-        justify-content: center;
-      }
-      .modal-content {
-        background-color: #ffffff;
-        padding: 30px;
-        border-radius: 10px;
-        max-width: 500px;
-        width: 90%;
-        text-align: center;
-      }
-      #userInput {
-        width: calc(100% - 110px);
-        padding: 10px;
-        margin-right: 10px;
-        font-size: 16px;
-      }
-      .modal-content button {
-        padding: 10px;
-        background-color: #f9da85;
-        border: none;
-        cursor: pointer;
-        font-weight: bold;
-      }
-      .response {
-        margin-top: 20px;
-        text-align: left;
-        max-height: 300px;
-        overflow-y: auto;
-      }
-      .chat-message {
-        margin-bottom: 10px;
-      }
-      .user-message {
-        text-align: right;
-        color: blue;
-      }
-      .ai-message {
-        text-align: left;
-        color: green;
-      }
-    </style>
   </head>
   <body>
     <div id="searchModal" class="modal">
       <div class="modal-content">
-        <p>
-          Greetings! I am Abhash's best friend, and you can ask me anything
-          about me and my profile portfolio. For example: "Show me your resume."
-        </p>
-        <input
-          type="text"
-          id="userInput"
-          placeholder="Ask anything about Abhash Niroula..."
-        />
-        <button onclick="handleQuery()">Search</button>
-        <div id="chatHistory" class="response"></div>
+        <!-- Header with greeting, dark mode toggle, and profile card -->
+        <div class="header-section">
+          <div class="chat-header">
+            Greetings! I am Abhash in a virtual world, and you can ask me
+            anything about my profile portfolio and life in general. For
+            example: "Show me your resume."
+          </div>
+          <div class="header-row">
+            <div class="profile-card">
+              <img
+                src="media/1.JPG"
+                alt="Abhash's Photo"
+                class="profile-photo"
+              />
+              <div class="profile-info">
+                <h2>Abhash Niroula</h2>
+                <p>AI & Software Engineer</p>
+                <p>Location: Caldwell, NJ</p>
+                <div class="profile-links">
+                  <a
+                    href="https://www.linkedin.com/in/abhash-niroula-b9a468235/"
+                    target="_blank"
+                    >LinkedIn</a
+                  >
+                  <a href="https://github.com/abhashn8" target="_blank"
+                    >GitHub</a
+                  >
+                </div>
+              </div>
+            </div>
+            <button id="darkModeToggle" onclick="toggleDarkMode()">
+              Toggle Dark Mode
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Section -->
+        <div class="chat-section">
+          <div id="chatHistory" class="chat-history"></div>
+        </div>
+
+        <!-- Input Section with Voice Button -->
+        <div class="input-section">
+          <input type="text" id="userInput" placeholder="Ask me something..." />
+          <button
+            id="voiceButton"
+            onclick="startVoiceRecognition()"
+            class="voice-button"
+            title="Voice Input"
+          >
+            <img src="media/mic.png" , class="mic-icon" alt="" />
+          </button>
+
+          <button onclick="handleQuery()" class="search-button">Search</button>
+        </div>
+
+        <!-- Action Buttons for common tasks -->
+        <div class="action-buttons">
+          <button onclick="handleViewResume()">📄 View Resume</button>
+          <button onclick="handleVisitPortfolio()">🌐 Visit Portfolio</button>
+        </div>
       </div>
     </div>
 
     <script>
+      // Toggle Dark Mode
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+      }
+
+      // Auto-scroll function
+      function scrollToBottom() {
+        const chatHistoryDiv = document.getElementById("chatHistory");
+        chatHistoryDiv.scrollTop = chatHistoryDiv.scrollHeight;
+      }
+
+      // Function to create a fade-in message element.
+      function createMessageElement(content, classList) {
+        const message = document.createElement("p");
+        message.classList.add("chat-message", ...classList, "fade-in");
+        message.innerHTML = content;
+        return message;
+      }
+
+      // Placeholder functions for action buttons.
+      function handleViewResume() {
+        window.open(
+          "https://pub-ebbe76c3985b4604b8d5d0885d75ccfd.r2.dev/Resume.pdf",
+          "_blank"
+        );
+      }
+      function handleVisitPortfolio() {
+        window.location.href = "home.html";
+      }
+
+      // Voice Recognition Setup using the Web Speech API.
+      let recognition;
+      if (
+        "webkitSpeechRecognition" in window ||
+        "SpeechRecognition" in window
+      ) {
+        const SpeechRecognition =
+          window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.continuous = false; // Listen for a single phrase.
+        recognition.lang = "en-US";
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.onresult = function (event) {
+          const transcript = event.results[0][0].transcript;
+          document.getElementById("userInput").value = transcript;
+        };
+
+        recognition.onerror = function (event) {
+          console.error("Speech recognition error:", event.error);
+        };
+      } else {
+        console.warn("Speech recognition is not supported in this browser.");
+      }
+
+      // Function to start voice recognition
+      function startVoiceRecognition() {
+        if (recognition) {
+          recognition.start();
+        } else {
+          alert("Voice recognition is not supported in your browser.");
+        }
+      }
+
+      // Handle the query submission
       function handleQuery() {
         const userInput = document.getElementById("userInput").value.trim();
         if (!userInput) return;
 
         const chatHistoryDiv = document.getElementById("chatHistory");
 
-        // Append user message to the chat history.
-        const userMessage = document.createElement("p");
-        userMessage.classList.add("chat-message", "user-message");
-        userMessage.innerHTML = `<strong>You:</strong> ${userInput}`;
+        // Append user message with fade-in animation.
+        const userMessage = createMessageElement(
+          `<strong>You:</strong> ${userInput}`,
+          ["user-message"]
+        );
         chatHistoryDiv.appendChild(userMessage);
+        scrollToBottom();
 
         // Clear the input field.
         document.getElementById("userInput").value = "";
 
-        // Append a loading message.
-        const loadingMessage = document.createElement("p");
-        loadingMessage.innerHTML = `<em>Loading...</em>`;
-        chatHistoryDiv.appendChild(loadingMessage);
+        // Create and show a typing indicator.
+        const typingIndicator = document.createElement("p");
+        typingIndicator.id = "typingIndicator";
+        typingIndicator.classList.add(
+          "chat-message",
+          "ai-message",
+          "fade-in",
+          "typing-indicator"
+        );
+        typingIndicator.innerHTML = `<strong>Abhash:</strong> <span>is typing<span class="dot">.</span><span class="dot">.</span><span class="dot">.</span></span>`;
+        chatHistoryDiv.appendChild(typingIndicator);
+        scrollToBottom();
 
         // Send the user's question to the backend API.
         fetch(
@@ -108,8 +187,9 @@
         )
           .then((response) => response.json())
           .then((data) => {
-            // Remove the loading message.
-            chatHistoryDiv.removeChild(loadingMessage);
+            // Remove the typing indicator.
+            const indicator = document.getElementById("typingIndicator");
+            if (indicator) chatHistoryDiv.removeChild(indicator);
 
             // Navigation logic: if the answer includes a portfolio link, redirect to home.html.
             if (data.answer.includes("portfolio link")) {
@@ -117,28 +197,33 @@
               return;
             }
 
-            // Alternatively, if the answer includes a resume download keyword,
-            // display a download link.
+            // If the answer includes "download resume", display a download link.
             if (data.answer.includes("download resume")) {
-              const downloadLink = document.createElement("p");
-              downloadLink.classList.add("chat-message", "ai-message");
-              downloadLink.innerHTML = `<strong>Abhash:</strong> <a href="https://your-cloudflare-resume-link.pdf" target="_blank">Download Resume</a>`;
+              const downloadLink = createMessageElement(
+                `<strong>Abhash:</strong> <a href="https://pub-ebbe76c3985b4604b8d5d0885d75ccfd.r2.dev/Resume.pdf" target="_blank">Download Resume</a>`,
+                ["ai-message"]
+              );
               chatHistoryDiv.appendChild(downloadLink);
             } else {
-              // Otherwise, just display the answer in the chat.
-              const aiMessage = document.createElement("p");
-              aiMessage.classList.add("chat-message", "ai-message");
-              aiMessage.innerHTML = `<strong>Abhash:</strong> ${data.answer}`;
+              // Otherwise, display the answer in the chat box.
+              const aiMessage = createMessageElement(
+                `<strong>Abhash:</strong> ${data.answer}`,
+                ["ai-message"]
+              );
               chatHistoryDiv.appendChild(aiMessage);
             }
+            scrollToBottom();
           })
           .catch((error) => {
-            // Remove the loading message and show an error message.
-            chatHistoryDiv.removeChild(loadingMessage);
-            const errorMessage = document.createElement("p");
-            errorMessage.classList.add("chat-message", "ai-message");
-            errorMessage.innerHTML = `<strong>Abhash:</strong> Sorry, something went wrong.`;
+            // Remove the typing indicator and show an error message.
+            const indicator = document.getElementById("typingIndicator");
+            if (indicator) chatHistoryDiv.removeChild(indicator);
+            const errorMessage = createMessageElement(
+              `<strong>Abhash:</strong> Sorry, something went wrong.`,
+              ["ai-message"]
+            );
             chatHistoryDiv.appendChild(errorMessage);
+            scrollToBottom();
           });
       }
 
@@ -152,21 +237,17 @@
           }
         });
 
+      // Fetch prompts from prompts.json and set a random placeholder (optional feature)
       fetch("/prompts.json")
         .then((response) => response.json())
         .then((prompts) => {
-          console.log("Fetched prompts:", prompts);
-
           function setRandomPrompt() {
             const randomPrompt =
               prompts[Math.floor(Math.random() * prompts.length)];
-            console.log("Selected random prompt:", randomPrompt);
             document.getElementById("userInput").placeholder = randomPrompt;
           }
-
           setRandomPrompt();
-
-          setInterval(setRandomPrompt, 5000);
+          setInterval(setRandomPrompt, 4000);
         })
         .catch((error) => console.error("Error fetching prompts:", error));
     </script>
